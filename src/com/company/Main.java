@@ -31,7 +31,9 @@ public class Main {
         tank();
         heroesHit();
         medic();
+        lovka4();
         thor();
+        bercek();
         fightInfo();
     }
 
@@ -41,7 +43,7 @@ public class Main {
 
         if (heroesHealth[3] <= 0) {
             heroesHealth[3] = 0;
-        } else {
+        } else if (heroesHealth[randomHero] > 0) {
             heroesHealth[randomHero] += medicHp;
             System.out.println(heroesAttackType[randomHero] + "+" + medicHp + "HP");
         }
@@ -80,7 +82,9 @@ public class Main {
                     }
                 }
             }
-            System.out.println("Tank take damage: " + (takeDamage * (heroesHealth.length - 1)));
+            if (heroesHealth[4] > 0) {
+                System.out.println("Tank take damage: " + (takeDamage * (heroesHealth.length - 1)));
+            }
         }
     }
 
@@ -97,6 +101,34 @@ public class Main {
         }
     }
 
+    public static void lovka4() {
+        boolean uklon = random.nextBoolean();
+
+        if (heroesHealth[5] < 0) {
+            heroesHealth[5] = 0;
+        } else if (uklon && bossHealth > 0) {
+            heroesHealth[5] += bossDamage - takeDamage;
+            System.out.println("Lovkach uklon");
+        }
+    }
+
+    public static void bercek() {
+        int blok = 20;
+        int uron = heroesDamage[6] + blok;
+        if (heroesHealth[6] < 0) {
+            heroesHealth[6] = 0;
+        } else if (heroesHealth[4] > 0 && bossHealth - uron > 0) {
+            heroesHealth[6] += blok;
+            bossHealth -= uron;
+            System.out.println("Berserk blocked " + blok + " , take " + (takeDamage - blok));
+        } else if (bossHealth - uron > 0) {
+            heroesHealth[6] += blok;
+            bossHealth -= uron;
+            System.out.println("Berserk blocked " + blok + " , take " + (bossDamage - blok));
+        }
+
+    }
+
 
     public static void changeBossDefence() {
         int randomIndex = random.nextInt(heroesAttackType.length);
@@ -108,14 +140,17 @@ public class Main {
             System.out.println("Heroes won!");
             return true;
         }
+        boolean dead = true;
         for (int i = 0; i < heroesHealth.length; i++) {
-            if (heroesHealth[i] <= 0) {
-                System.out.println("Boos won!");
-                return true;
+            if (heroesHealth[i] > 0) {
+                dead = false;
+                break;
             }
         }
-
-        return false;
+        if (dead) {
+            System.out.println("Boss win");
+        }
+        return dead;
     }
 
     public static void bossHit() {
@@ -158,7 +193,7 @@ public class Main {
     // Статистика боя
     public static void fightInfo() {
         System.out.println("_________________________");
-        System.out.println("Boss health: " + bossHealth + " [" + bossDamage + "] ");
+        System.out.println("Boss health: " + bossHealth + " [" + bossDamage + "] \n");
 
         for (int i = 0; i < heroesAttackType.length; i++) {
             System.out.println("" +
